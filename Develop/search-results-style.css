@@ -1,0 +1,17 @@
+#header {
+    justify-content: center;
+    background-color:rgb(230, 208, 173);
+}
+
+input {
+    justify-content: center;
+}
+
+#searchbtn {
+    margin-top: 10px;
+  }
+
+#citydiv {
+    background-color: rgb(230, 208, 173);
+    color: rgb(31, 17, 1);
+  }
