@@ -54,8 +54,12 @@ function CitySearchBtn(event) {
     event.preventDefault();
 
     var cityNameVal = document.querySelector('#search-input').value;
+    if (!cityNameVal) {
+        window.alert("Please choose a city");
+    } else {
     console.log(cityNameVal);
     returnLatLongApi(cityNameVal);
+    }
 }
 
 searchBtnEl.addEventListener('click', CitySearchBtn);
@@ -77,146 +81,125 @@ searchBtnEl.addEventListener('click', CitySearchBtn);
 //             // 5 DAY FORECAST
 
 
-
-
-var resultTextEl = document.querySelector('#city-value-text');
-var resultContentEl = document.querySelector('#city-value-results');
-var searchFormEl = document.querySelector('#search-form');
-
-
-
-
-
-
-
-
-
-
-
-
 // CHECK OUT DATA RETURNED FROM API
 // https://openweathermap.org/api/geocoding-api THIS WILL TAKE IN CITY NAME AND COUNTRY CODE - THEN WILL RETURN LATITUDE AND LONGITUDE http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&appid={API key}  
 // https://openweathermap.org/forecast5 THIS NEEDS LATITUDE AND LONGITUDE - GET RESPONSE FROM GEOCODING API TO DO SO 
-  // THIS WILL RETURN TEMPERATURE, HUMIDITY, WIND SPEED
+// THIS WILL RETURN TEMPERATURE, HUMIDITY, WIND SPEED
 
 
 
 
 function forecastApi(lat, lon) {
-
+    
     const forecastOptions = {method: 'GET'};
-
+    
     fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=92e6198cc23e5a6a269f50f1f699c15a`, forecastOptions)
-      .then(response => response.json())
-      .then(response => {console.log("second fetch", response)
-      firstDay(response)})
-      .catch(err => console.error(err));
+    .then(response => response.json())
+    .then(response => {console.log("second fetch", response)
+    firstDay(response)})
+    .then(response => {console.log("next day forecast", response)
+    nextDays(response)})
+    .catch(err => console.error(err));
 }
-
-      
-function returnLatLongApi(nameCity) {
-    const options = {method: 'GET'};
-
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${nameCity}&appid=92e6198cc23e5a6a269f50f1f699c15a`, options)
-      .then((response) => 
-        // console.log(response))
-        response.json())
-      .then(response => { console.log(response) 
-      forecastApi(response[0].lat, response[0].lon)})
-      .catch(err => console.error(err));
-
-}
-
-
-
-
-
-
-
-
 
 
 // now pass lat and long data from geoAPI through 5 day forecast API
 
-
-
-
-
-function firstDay(data){
-    var resultCard = document.createElement('div');
-    resultCard.classList = 'card-body';
-    cityDiv.append(resultCard);
+function returnLatLongApi(nameCity) {
+    const options = {method: 'GET'};
     
-    var cardDetails = document.createElement('div');
-    cardDetails.classList.add('card-details');
-    resultCard.append(cardDetails);
-    console.log(data)
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${nameCity}&appid=92e6198cc23e5a6a269f50f1f699c15a`, options)
+    .then((response) => 
+    // console.log(response))
+    response.json())
+    .then(response => { console.log(response) 
+        forecastApi(response[0].lat, response[0].lon)})
+        .catch(err => console.error(err));
+        
+    }
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    function firstDay(data){
+        var resultCard = document.createElement('div');
+        resultCard.classList = 'card-body';
+        cityDiv.append(resultCard);
+        
+        var cardDetails = document.createElement('div');
+        cardDetails.classList.add('card-details');
+        resultCard.append(cardDetails);
+        console.log(data, "first day card details");
+        
     var cardDate = document.createElement('h3');
     cardDate.textContent = data.list[0].dt_txt;
     resultCard.append(cardDate);
 
     
 
-        var cardData = document.createElement('div');
+    var cardData = document.createElement('div');
 
-        var temp = document.createElement('p');
-        temp.textContent = data.list[0].main.temp;
-        cardData.append((temp*(9/5 + 32), "Fahrenheit" ));
+    var temp = document.createElement('p');
+        temp.textContent = (data.list[0].main.temp);
+        cardData.append(temp, "Celcius");
 
         var humidity = document.createElement('p');
         humidity.textContent = data.list[0].main.humidity;
-        cardData.append(humidity, "Humidity" );
+        cardData.append(humidity, "% Humidity" );
 
         var wind = document.createElement('p');
         wind.textContent = data.list[0].wind.speed;
-        cardData.append(wind);
+        cardData.append(wind, "mph");
 
         var icon = document.createElement('p');
         icon.textContent = data.list[0].weather[0].description;
         cardData.append(icon);
-
+        
         resultCard.append(cardData)
-} 
+        console.log(cardData, "first day data")
+    } 
 
+    
+    
+    var resultTextEl = document.querySelector('#city-value-text');
+    var resultContentEl = document.querySelector('#city-value-results');
+    var searchFormEl = document.querySelector('#search-form');
+    
+    
+    function nextDays(data) {
+        var nextDayCard = document.createElement('div');
+        nextDayCard.classList = 'card-body';
+        cityDiv.append(nextDayCard);
+        
+        var cardDetails = document.createElement('div');
+        cardDetails.classList.add('card-details');
+        nextDayCard.append(cardDetails);
+        
+        var cardDate = document.createElement('h3');
+    cardDate.textContent = data.list[6].dt_txt;
+    nextDayCard.append(cardDate);
+    
+    //  use for loop here to set up dynamic div that will open up cards for 5 day forecast results to display in
 
-
-function nextDays(data) {
-    var resultCard = document.createElement('div');
-    resultCard.classList = 'card-body';
-    cityDiv.append(resultCard);
-    
-    var cardDetails = document.createElement('div');
-    cardDetails.classList.add('card-details');
-    resultCard.append(cardDetails);
-    
-    var cardDate = document.createElement('h3');
-    cardDate.textContent = data.list[0].dt_txt;
-    resultCard.append(cardDate);
-    
-    for (let i = 0; i < data.length; i++) {
-        if (condition) {
-            
-            temp.textContent = data.list[0].main.temp;
-            humidity.textContent = data.list[0].main.humidity;
-            wind.textContent = data.list[0].wind.speed;
-            icon.textContent = data.list[0].weather[0].description;
-            resultCard.append(cardDate)
+    for (let i = 0; i < data.list.length; i++) {
+            temp.textContent = data.list[6].main.temp;
+            humidity.textContent = data.list[6].main.humidity;
+            wind.textContent = data.list[6].wind.speed;
+            icon.textContent = data.list[6].weather[6].description;
         }
-    }
+    nextDayCard.append(cardDate)
+        
 }
-
-
-
-
-
-
-//  use for loop here to set up dynamic div that will open up cards for 5 day forecast results to display in
-
-
-
-
-
 
 
 // hint: this will be a teather to the event listener
@@ -266,11 +249,11 @@ function nextDays(data) {
 //     });
 
     
-    console.log(localStorage.setItem('search-input', CitySearchBtn));
+    console.log(localStorage.setItem('search-input', resultTextEl));
 
     $('search-input').val(localStorage.getItem("form w-100"));
 
-/// Why you no worky either???
+/// Why you no worky???
 
 
 

@@ -30,11 +30,12 @@ THEN I am again presented with current and future conditions for that city
 
 The following image shows the web application's appearance and functionality:
 
-![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Denver .](./Assets/06-server-side-apis-homework-demo.png)
+![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Denver .](./Assets/app-main.JPG)
+![](./Assets/app-console.JPG)
 
 
 
-
+** still need to work on saving to local storage, values are undefined as well as displaying next day forecasts and styling...this is a pretty boring weather forecast app at the current moment. Will continue working and resubmit 
 
 
 
